@@ -1,0 +1,40 @@
+// Copyright (c) 2025 CyberCortex Robotics SRL. All rights reserved
+// Author: Sorin Mihai Grigorescu
+// USB Logitech Camera Calibration Parameters 
+
+image_width     = 640;
+image_height    = 480;
+baseline        = 0.0;
+range           = [0., 99999.0];
+
+Pose = 
+{
+	Rotation = 
+    {
+        x = -90.0
+        y = 0.0
+        z = -90.0
+    }
+	Translation =
+    {
+        x = 0.0;
+        y = 0.0;
+        z = 2.0;
+    }
+};
+	
+LeftSensor = 
+{
+	channels			= 3;
+	focal_length_x		= 839.31036916
+	focal_length_y		= 841.91151515
+	optical_center_x	= 314.53088329
+	optical_center_y	= 229.41249964
+	pixel_size_x		= 4.5000001591688488e-006;
+	pixel_size_y		= 4.5000001591688488e-006;
+	dist_coeff_0		= 0.47253464
+	dist_coeff_1		= -19.95401683
+	dist_coeff_2		= 0.00626802
+	dist_coeff_3		= -0.00224073
+	dist_coeff_4		= 275.72373963
+};

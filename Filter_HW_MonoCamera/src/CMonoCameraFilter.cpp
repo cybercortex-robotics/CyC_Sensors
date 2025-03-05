@@ -1,7 +1,7 @@
 // Copyright (c) 2025 CyberCortex Robotics SRL. All rights reserved
 // Author: Sorin Mihai Grigorescu
 
-#include "CMonoCamera.h"
+#include "CMonoCameraFilter.h"
 #include "vision/CImageProcessing.h"
 #include "vision/CDepthImageProcessing.h"
 #ifdef ROBOT_ARPAROTDRONE_ENABLED
@@ -11,31 +11,56 @@
 #include <CParrotANAFI.h>
 #endif // ROBOT_PARROTANAFI_ENABLED
 
-CMonoCameraFilter::CMonoCameraFilter(CcrDatablockKey key) :
-    CBaseCcrFilter(key),
+#define DYNALO_EXPORT_SYMBOLS
+#include <dynalo/symbol_helper.hpp>
+
+DYNALO_EXPORT CyC_FILTER_TYPE DYNALO_CALL getFilterType()
+{
+    CycDatablockKey key;
+    return CMonoCameraFilter(key).getFilterType();
+}
+
+DYNALO_EXPORT CCycFilterBase* DYNALO_CALL createFilter(const ConfigFilterParameters _params)
+{
+    return new CMonoCameraFilter(_params);
+}
+
+CMonoCameraFilter::CMonoCameraFilter(CycDatablockKey _key) :
+    CCycFilterBase(_key),
     m_nDeviceID(0),
     m_bRectifyImages(false),
     m_nApiID(cv::CAP_ANY)	// 0 = autodetect default API
 {
-    init();
-}
+    setFilterType("CyC_MONO_CAMERA_FILTER_TYPE");
 
-CMonoCameraFilter::CMonoCameraFilter(ConfigFilterParameters params) :
-    CBaseCcrFilter(params),
-    m_nDeviceID(0),
-    m_bRectifyImages(false),
-    m_nApiID(cv::CAP_ANY)	// 0 = autodetect default API
-{
-    init();
-}
-
-void CMonoCameraFilter::init()
-{
-    m_FilterType = CCR_MONO_CAMERA_FILTER_TYPE;
-    
     // Assign the output data type
-    m_OutputDataType = CCR_IMAGE;
-    m_InputDataType = CCR_IMAGE;
+    m_OutputDataType = CyC_IMAGE;
+    m_InputDataType = CyC_IMAGE;
+}
+
+CMonoCameraFilter::CMonoCameraFilter(ConfigFilterParameters _params) :
+    CCycFilterBase(_params),
+    m_nDeviceID(0),
+    m_bRectifyImages(false),
+    m_nApiID(cv::CAP_ANY)	// 0 = autodetect default API
+{
+    setFilterType("CyC_MONO_CAMERA_FILTER_TYPE");
+
+    // Assign the output data type
+    m_OutputDataType = CyC_IMAGE;
+    m_InputDataType = CyC_IMAGE;
+
+    // Load the sensor model
+    if (!m_CustomParameters.at("CalibrationFile").empty())
+    {
+        CStringUtils::stringToBool(m_CustomParameters["Rectify"], m_bRectifyImages);
+        fs::path calib_file = fs::path(_params.sGlobalBasePath) / fs::path(m_CustomParameters.at("CalibrationFile"));
+        this->m_pSensorModel = new CPinholeCameraSensorModel(calib_file.string());
+    }
+    else
+    {
+        spdlog::error("Filter [{}-{}]: {}: Calibration file does not exist. Disabling filter.", getFilterKey().nCoreID, getFilterKey().nFilterID, typeid(*this).name());
+    }
 }
 
 CMonoCameraFilter::~CMonoCameraFilter()
@@ -55,19 +80,6 @@ bool CMonoCameraFilter::enable()
 {
     if (!isNetworkFilter())
     {
-        // Load the sensor model
-        if (!m_CustomParameters.at("CalibrationFile").empty())
-        {
-            CStringUtils::stringToBool(m_CustomParameters["Rectify"], m_bRectifyImages);
-            fs::path calib_file = fs::path(CConfigParameters::instance().getGlobalBasePath()) / fs::path(m_CustomParameters.at("CalibrationFile"));
-            this->m_pSensorModel = new CPinholeCameraSensorModel(calib_file.string());
-        }
-        else
-        {
-            spdlog::error("Filter [{}-{}]: {}: Calibration file does not exist. Disabling filter.", getFilterKey().nCoreID, getFilterKey().nFilterID, typeid(*this).name());
-            return false;
-        }
-
         // Get the pose data filter
         m_pPoseDataFilter = CFilterUtils::getStateFilter(this->getInputSources());
         
@@ -306,7 +318,7 @@ bool CMonoCameraFilter::process()
     if (m_bRectifyImages)
         dynamic_cast<CPinholeCameraSensorModel*>(this->m_pSensorModel)->undistortImage(frame, frame);
     
-    CcrImages dst;
+    CycImages dst;
     dst.emplace_back(frame);
     updateData(dst);
 
@@ -341,14 +353,14 @@ void CMonoCameraFilter::loadFromDatastream(const std::string& _datastream_entry,
     if (m_bRectifyImages)
         sensor_model->undistortImage(frame, frame);
 
-    CcrImages output;
+    CycImages output;
     output.emplace_back(frame);
 
-    const auto tTimestampStop  = row.get<CCR_TIME_UNIT>(TS_STOP);
-    const auto tSamplingTime   = row.get<CCR_TIME_UNIT>(SAMPLING_TIME);
+    const auto tTimestampStop  = row.get<CyC_TIME_UNIT>(TS_STOP);
+    const auto tSamplingTime   = row.get<CyC_TIME_UNIT>(SAMPLING_TIME);
     const auto tTimestampStart = tTimestampStop - tSamplingTime;
 
-    updateData(output, std::unordered_map<CcrDatablockKey, CCR_TIME_UNIT>(), tTimestampStart, tTimestampStop, tSamplingTime);
+    updateData(output, std::unordered_map<CycDatablockKey, CyC_TIME_UNIT>(), tTimestampStart, tTimestampStop, tSamplingTime);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(40));
     this->m_bIsProcessing = false;
