@@ -1,0 +1,4 @@
+[submodule "inference"]
+	path = inference
+	url = ../inference
+	branch = main
