@@ -31,6 +31,10 @@ include_directories(${CyC_THIRD_PARTY_INCLUDE_DIRECTORIES})
 
 include_directories(inference/include)
 include_directories(inference/include/core)
+
+
+message(STATUS ${CMAKE_CURRENT_SOURCE_DIR}/inference/lib/win-msvc-x64)
+#exit()
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/inference/lib/win-msvc-x64)
 
 # Include 3rdParty library directories
