@@ -38,8 +38,11 @@ endif(RASPBERRY_PI)
 target_link_libraries(${FILTER_NAME}
     PUBLIC
         enet
+        libconfig++
+        libcsv
         CycCore
-        CycToolkit)
+        CycToolkit
+        ${CyC_OPENCV_WORLD})
 
 if (WIN32)
     target_link_libraries(${FILTER_NAME}

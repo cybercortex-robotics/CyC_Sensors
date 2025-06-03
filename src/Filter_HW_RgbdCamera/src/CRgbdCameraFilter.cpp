@@ -39,9 +39,9 @@ CRgbdCameraFilter::CRgbdCameraFilter(const ConfigFilterParameters& _params) :
     // Check if a realsense robot is already registered
     if (_params.pSingletonRegistry != nullptr)
     {
-        if (_params.pSingletonRegistry->get<CRealSense2API>() == nullptr)
-            _params.pSingletonRegistry->registerInstance<CRealSense2API>();
-        m_RealSense = _params.pSingletonRegistry->get<CRealSense2API>();
+        if (_params.pSingletonRegistry->get<CRealSense2Api>() == nullptr)
+            _params.pSingletonRegistry->registerInstance<CRealSense2Api>();
+        m_RealSense = _params.pSingletonRegistry->get<CRealSense2Api>();
     }
 
     // Load the sensor model

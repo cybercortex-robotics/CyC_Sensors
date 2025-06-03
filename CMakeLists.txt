@@ -24,7 +24,21 @@ set(CyC_ONNXRUNTIME_VERSION "1.16.3")
 ######## !USER DEFINED VARIABLES ########
 
 # Add CyberCortex inference engine
-add_subdirectory(inference)
+add_subdirectory(CyC_inference)
+
+if (NOT ANDROID)
+    #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_SOURCE_DIR}/bin>)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+endif (NOT ANDROID)
+
+# Copy inference app
+configure_file(
+  ${CMAKE_SOURCE_DIR}/CyC_inference/bin/${CyC_LIBS_BINARY_KEY}/App_CcrCore.exe
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/App_CcrCore.exe
+  COPYONLY
+)
 
 # Include 3rdParty directories
 include_directories(${CyC_THIRD_PARTY_INCLUDE_DIRECTORIES})
@@ -35,5 +49,9 @@ include_directories(inference/include/core)
 # Include 3rdParty library directories
 link_directories(${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
 
+# Build Robots
+add_subdirectory(CyC_Robots/src)
+
 # Hardware sensory filters
-add_cyc_filter(Filter_HW_MonoCamera Filter_HW_MonoCamera)
+add_cyc_filter(Filter_HW_MonoCamera src/Filter_HW_MonoCamera)
+add_cyc_filter(Filter_HW_RgbdCamera src/Filter_HW_RgbdCamera)

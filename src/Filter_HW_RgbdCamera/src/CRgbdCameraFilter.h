@@ -11,7 +11,7 @@
 #include "os/CSingletonRegistry.h"
 #include "CCycFilterBase.h"
 #include "CRgbdUtils.h"
-#include "CRealSense2API.h"
+#include "CRealSense2Api.h"
 //#include "COpenNI2API.h"
 #include "api/unity/CRgbdCameraUnityApi.h"
 
@@ -37,7 +37,7 @@ private:
 	//std::unique_ptr<COpenNI2API>	m_pOpenNI2API;
 	CRGBDCameraUnityApi				m_UnityInterface;
 
-	std::shared_ptr<CRealSense2API> m_RealSense;
+	std::shared_ptr<CRealSense2Api> m_RealSense;
 
 	bool m_bRectifyImages;
 

@@ -19,7 +19,7 @@
 #include "CRgbdUtils.h"
 #include "sensors/CPinholeCameraSensorModel.h"
 //#include "COpenNI2API.h"
-#include "CRealSense2API.h"
+#include "CRealSense2Api.h"
 #include "env/COcTreeUtils.h"
 #include "vision/CDepthImageProcessing.h"
 #include "vision/CImageProcessing.h"
@@ -38,7 +38,7 @@ std::string sSaveFolder;
 std::unique_ptr<CPinholeCameraSensorModel> pCamSensorModel;
 CRgbdUtils::RGBDCameraApiType m_InterfaceType = CRgbdUtils::RGBD_CAMERA_OPENNI_API;
 //std::unique_ptr<COpenNI2API> openni_api;
-std::shared_ptr<CRealSense2API> m_RealSense2 = CRealSense2API::create_instance();
+std::shared_ptr<CRealSense2Api> m_RealSense2 = CRealSense2Api::create_instance();
 
 CTimer timer;
 cv::Point ptMouseDepth(0, 0);

@@ -15,7 +15,8 @@ add_library(${FILTER_NAME} SHARED
 
 target_include_directories(${FILTER_NAME}
     PUBLIC
-        ${CMAKE_SOURCE_DIR}/src/cyc_robots/RealSense/src/)
+        ${CMAKE_SOURCE_DIR}/CyC_Robots/src/RealSense/src/
+        ${CMAKE_SOURCE_DIR}/CyC_Robots/src/RealSense/src/realsense-2.50.0/include)
        
 target_link_directories(${FILTER_NAME}
     PUBLIC 
@@ -31,7 +32,10 @@ target_link_libraries(${FILTER_NAME}
         enet
         Robot_RealSense
         CycCore
-        CycToolkit)
+        CycToolkit
+        libconfig++
+        libcsv
+        ${CyC_OPENCV_WORLD})
 
 if (WIN32)
     target_link_libraries(${FILTER_NAME}
@@ -112,6 +116,8 @@ target_link_libraries(tu_RgbdCamera
         #${FILTER_NAME}
         #Filter_Visualization_Octoviz
         CycToolkit
+        libconfig++
+        libcsv
         ${CyC_OPENCV_WORLD}
         octomap
         octomath
@@ -132,4 +138,6 @@ target_link_directories(tu_RgbdCamera_DepthEncoding
 target_link_libraries(tu_RgbdCamera_DepthEncoding
     PUBLIC
         CycToolkit
+        libconfig++
+        libcsv
         ${CyC_OPENCV_WORLD})
