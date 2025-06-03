@@ -1,0 +1,18 @@
+// Copyright (c) 2025 CyberCortex Robotics SRL. All rights reserved
+// Author: Sorin Mihai Grigorescu
+
+Pose = 
+{
+	Rotation = 
+    {
+        x = 180.0;
+        y = 0.0;
+        z = -90.0;
+    }
+	Translation =
+    {
+        x = 0.0;
+        y = 0.0;
+        z = 0.0;
+    }
+}

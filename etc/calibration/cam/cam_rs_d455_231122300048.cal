@@ -1,0 +1,58 @@
+// Copyright (c) 2025 CyberCortex Robotics SRL. All rights reserved
+// Author: Sorin Mihai Grigorescu
+
+// Intel Realsense Camera Calibration Parameters
+
+image_width     = 640;
+image_height    = 360;
+baseline        = -0.094962;
+range           = [0.5, 30.0];
+
+Pose = 
+{
+	Rotation = 
+    {
+        x = -90.0
+        y = 0.0
+        z = -90.0
+    }
+	Translation =
+    {
+        x = 0.0;
+        y = 0.0;
+        z = 0.0;
+    }
+};
+
+// RGB camera parameters	
+LeftSensor = 
+{
+	channels			= 3;
+	focal_length_x		= 322.07557377;
+	focal_length_y		= 321.67203686;
+	optical_center_x	= 325.49382262;
+	optical_center_y	= 182.86714089;
+	pixel_size_x		= 4.5000001591688488e-006;
+	pixel_size_y		= 4.5000001591688488e-006;
+	dist_coeff_0		= -0.04701598;
+	dist_coeff_1		= 0.04914834;
+	dist_coeff_2		= 0.00160308;
+	dist_coeff_3		= -0.00133665;
+	dist_coeff_4		= 0.0;
+};
+
+RightSensor = 
+{
+	channels			= 1;
+	focal_length_x		= 322.07557377;
+	focal_length_y		= 321.67203686;
+	optical_center_x	= 325.49382262;
+	optical_center_y	= 182.86714089;
+	pixel_size_x		= 4.5000001591688488e-006;
+	pixel_size_y		= 4.5000001591688488e-006;
+	dist_coeff_0		= -0.04701598;
+	dist_coeff_1		= 0.04914834;
+	dist_coeff_2		= 0.00160308;
+	dist_coeff_3		= -0.00133665;
+	dist_coeff_4		= 0.0;
+};

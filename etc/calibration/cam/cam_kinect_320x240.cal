@@ -1,0 +1,57 @@
+// Copyright (c) 2025 CyberCortex Robotics SRL. All rights reserved
+// Author: Sorin Mihai Grigorescu
+// Kinect Camera Calibration Parameters
+
+image_width = 320;
+image_height = 240;
+
+Pose = 
+{
+	Rotation = 
+    {
+        x = -90.0
+        y = 0.0
+        z = -90.0
+    }
+	Translation =
+    {
+        x = 0.0;
+        y = 0.0;
+        z = 1.5;
+    }
+};
+
+// RGB camera parameters	
+LeftSensor = 
+{
+	channels			= 3;
+	focal_length_x		= 264.607544;
+	focal_length_y		= 262.781982;
+	optical_center_x	= 164.471359;
+	optical_center_y	= 133.740341;
+	pixel_size_x		= 4.5000001591688488e-006;
+	pixel_size_y		= 4.5000001591688488e-006;
+	dist_coeff_0		= 0.26451622333009589;
+	dist_coeff_1		= -0.83990749424620825;
+	dist_coeff_2		= -0.00019922302173693159;
+	dist_coeff_3		= 0.00014371995932897616;
+	dist_coeff_4		= 0.91192465078713847;
+};
+
+RightSensor = 
+{
+	channels			= 1;
+	focal_length_x		= 297.107178;
+	focal_length_y		= 295.520264;
+	optical_center_x	= 169.653900;
+	optical_center_y	= 121.369568;
+	pixel_size_x		= 4.5000001591688488e-006;
+	pixel_size_y		= 4.5000001591688488e-006;
+	dist_coeff_0		= -0.26386489753128833;
+	dist_coeff_1		= 0.99966832163729757;
+	dist_coeff_2		= -0.000076275862143610667;
+	dist_coeff_3		= 0.00050350940090814270;
+	dist_coeff_4		= -1.3053628089976321;
+};
+
+baseline = -0.074;
