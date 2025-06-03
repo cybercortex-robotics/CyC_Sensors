@@ -46,7 +46,10 @@ target_link_libraries(${FILTER_NAME}
         CycCore
         CycToolkit
         lslidar
-        Robot_Livox)
+        Robot_Livox
+        libconfig++
+        libcsv
+        ${CyC_OPENCV_WORLD})
         
 if (NOT WIN32)
     # Hesai Pandar library
@@ -86,5 +89,5 @@ set_target_properties(${FILTER_NAME} PROPERTIES
 add_executable(tu_Lidar src/tu_Lidar.cpp)
 target_include_directories(tu_Lidar PUBLIC ${CMAKE_SOURCE_DIR}/src/cyc_robots/Livox/src)
 target_link_directories(tu_Lidar PUBLIC ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
-target_link_libraries(tu_Lidar PUBLIC CycToolkit Robot_Livox)
+target_link_libraries(tu_Lidar PUBLIC CycToolkit Robot_Livox ${CyC_OPENCV_WORLD})
 

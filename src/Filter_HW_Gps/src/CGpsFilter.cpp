@@ -6,36 +6,33 @@
 #include <csv_reader.h>
 #include "interfaces/ublox_gps/UbloxGPS.h"
 
-static int StringToEnumType(const std::string& str_ctrl_name)
-{
-	if (str_ctrl_name.compare("sim") == 0)
-		return Gps_SIM_INTERFACE;
-	else if (str_ctrl_name.compare("real") == 0)
-		return Gps_REAL_INTERFACE;
-	else if (str_ctrl_name.compare("brick") == 0)
-		return Gps_BRICK_INTERFACE;
-	else if (str_ctrl_name == "ublox")
-		return Gps_UBLOX_INTERFACE;
+#define DYNALO_EXPORT_SYMBOLS
+#include <dynalo/symbol_helper.hpp>
 
-	return Gps_SIM_INTERFACE;
+DYNALO_EXPORT CyC_FILTER_TYPE DYNALO_CALL getFilterType()
+{
+	CycDatablockKey key;
+	return CGpsFilter(key).getFilterType();
+}
+
+DYNALO_EXPORT CCycFilterBase* DYNALO_CALL createFilter(const ConfigFilterParameters _params)
+{
+	return new CGpsFilter(_params);
 }
 
 CGpsFilter::CGpsFilter(CycDatablockKey key) :
     CCycFilterBase(key)
 {
-	init();
+	// Assign the filter type, input type and output type
+	setFilterType("CyC_GPS_FILTER_TYPE");
+	m_OutputDataType = CyC_GPS;
 }
 
 CGpsFilter::CGpsFilter(const ConfigFilterParameters& params) :
     CCycFilterBase(params)
 {
-	init();
-}
-
-void CGpsFilter::init()
-{
 	// Assign the filter type, input type and output type
-	m_FilterType = CyC_GPS_FILTER_TYPE;
+	setFilterType("CyC_GPS_FILTER_TYPE");
 	m_OutputDataType = CyC_GPS;
 
 	if (!m_CustomParameters["interface"].empty())
@@ -93,15 +90,12 @@ bool CGpsFilter::enable()
 		{
 			for (const CycInputSource& src : this->getInputSources())
 			{
-				switch (src.pCycFilter->getFilterType())
+				if (src.pCycFilter->getFilterType() == CStringUtils::CyC_HashFunc("CyC_VEHICLE_STATE_ESTIMATION_FILTER_TYPE"))
+					m_pStateSimFilter = src.pCycFilter;
+				else if (src.pCycFilter->getFilterType() == CStringUtils::CyC_HashFunc("CyC_VEHICLE_SIMULATION_FILTER_TYPE"))
+					m_pStateSimFilter = src.pCycFilter;
+				else
 				{
-				case CyC_VEHICLE_STATE_ESTIMATION_FILTER_TYPE:
-					m_pStateSimFilter = src.pCycFilter;
-					break;
-				case CyC_VEHICLE_SIMULATION_FILTER_TYPE:
-					m_pStateSimFilter = src.pCycFilter;
-					break;
-				default:
 					spdlog::error("Filter [{}-{}]: CGpsFilter: Expected CyC_VEHICLE_SIMULATION_FILTER_TYPE or CyC_VEHICLE_STATE_ESTIMATION_FILTER_TYPE as input filter. CRotaryEncoderFilter disabled.", getFilterKey().nCoreID, getFilterKey().nFilterID);
 					return false;
 				}
@@ -115,14 +109,14 @@ bool CGpsFilter::enable()
 		}
 		else if (m_InterfaceType == Gps_BRICK_INTERFACE)
 		{
-			if (!m_gpsBricklet.setup(1000)) 
+			/*if (!m_gpsBricklet.setup(1000)) 
 			{
 				spdlog::error("Filter[{}-{}]: Can't setup brick imu.");
 				return false;
 			}
 
 			std::this_thread::sleep_for(std::chrono::seconds(1));
-			m_gpsBricklet.start();
+			m_gpsBricklet.start();*/
 		}
 		else if (m_InterfaceType == Gps_UBLOX_INTERFACE)
 		{
@@ -218,7 +212,7 @@ bool CGpsFilter::process()
 	}
 	else if (m_InterfaceType == Gps_BRICK_INTERFACE)
 	{
-		const auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
+		/*const auto ts = std::chrono::duration_cast<std::chrono::milliseconds>(
 			std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 
 		if ((ts - m_lastTsState) > 10)
@@ -234,7 +228,7 @@ bool CGpsFilter::process()
 			gps.alt = gpsData.alt;
 
 			bReturn = true;
-		}
+		}*/
 	}
 	else if (m_InterfaceType == Gps_UBLOX_INTERFACE)
 	{
@@ -306,7 +300,7 @@ void CGpsFilter::loadFromDatastream(const std::string& datastream_entry, const s
 	gps.baseLng = m_InitialGPS.lng;
 	gps.baseAlt = m_InitialGPS.alt;
 
-	updateData(gps, tTimestampStart, tTimestampStop, tSamplingTime);
+	updateData(gps, std::unordered_map<CycDatablockKey, CyC_TIME_UNIT>(), tTimestampStart, tTimestampStop, tSamplingTime);
 
 	// Unset the processing flag
 	m_bIsProcessing = false;
@@ -332,4 +326,18 @@ std::vector<std::string> CGpsFilter::splitLine(const std::string& line)
 	while (getline(sstream, temp, ','))
 		vec.push_back(temp);
 	return vec;
+}
+
+int CGpsFilter::StringToEnumType(const std::string& str_ctrl_name)
+{
+	if (str_ctrl_name.compare("sim") == 0)
+		return Gps_SIM_INTERFACE;
+	else if (str_ctrl_name.compare("real") == 0)
+		return Gps_REAL_INTERFACE;
+	else if (str_ctrl_name.compare("brick") == 0)
+		return Gps_BRICK_INTERFACE;
+	else if (str_ctrl_name == "ublox")
+		return Gps_UBLOX_INTERFACE;
+
+	return Gps_SIM_INTERFACE;
 }

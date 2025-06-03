@@ -10,20 +10,22 @@
 #include <random>
 #include "CCycFilterBase.h"
 #include "env/CGeolocation.h"
-#include "interfaces/gps_bricklet_api/gps.h"
-
-enum GpsInterfaceType
-{
-	Gps_SIM_INTERFACE = 0,
-	Gps_REAL_INTERFACE = 1,
-	Gps_BRICK_INTERFACE = 2,
-	Gps_UBLOX_INTERFACE = 3,
-};
+//#include "interfaces/gps_bricklet_api/gps.h"
 
 class UbloxGPS;
 
 class CGpsFilter : public CCycFilterBase
 {
+public:
+	enum GpsInterfaceType
+	{
+		Gps_SIM_INTERFACE = 0,
+		Gps_REAL_INTERFACE = 1,
+		Gps_BRICK_INTERFACE = 2,
+		Gps_UBLOX_INTERFACE = 3,
+	};
+	static int StringToEnumType(const std::string& str_ctrl_name);
+
 public:
 	explicit CGpsFilter(CycDatablockKey key);
 	explicit CGpsFilter(const ConfigFilterParameters& params);
@@ -33,12 +35,10 @@ public:
 	bool disable() override;
 
 private:
-	void		init();
-	
-	bool	process() override;
-    void		loadFromDatastream(const std::string& datastream_entry, const std::string& db_root_path) override;
+	bool process() override;
+    void loadFromDatastream(const std::string& datastream_entry, const std::string& db_root_path) override;
 
-	std::string					readSerialLine();
+	std::string						readSerialLine();
 	static std::vector<std::string>	splitLine(const std::string& line);
 
 private:
@@ -49,12 +49,12 @@ private:
 	bool m_IsGPSInitialized = false;
 
 	// GPS simulation variables
-	CCycFilterBase* m_pStateSimFilter = nullptr;
-	CyC_TIME_UNIT   m_lastTsState = 0;
-	std::random_device m_RandomDevice;			// random device class instance, source of 'true' randomness for initializing random seed
-	std::unique_ptr<std::mt19937> m_RandomGen;	// Mersenne twister PRNG, initialized with seed from previous random device instance
+	CCycFilterBase*					m_pStateSimFilter = nullptr;
+	CyC_TIME_UNIT					m_lastTsState = 0;
+	std::random_device				m_RandomDevice;		// Random device class instance, source of 'true' randomness for initializing random seed
+	std::unique_ptr<std::mt19937>	m_RandomGen;		// Mersenne twister PRNG, initialized with seed from previous random device instance
 
-	CGpsBricklet m_gpsBricklet;
-	std::unique_ptr<UbloxGPS> m_ublox_gps;
+	//CGpsBricklet				m_gpsBricklet;
+	std::unique_ptr<UbloxGPS>	m_ublox_gps;
 };
 #endif
