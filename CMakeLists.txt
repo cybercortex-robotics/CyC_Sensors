@@ -43,8 +43,8 @@ configure_file(
 # Include 3rdParty directories
 include_directories(${CyC_THIRD_PARTY_INCLUDE_DIRECTORIES})
 
-include_directories(inference/include)
-include_directories(inference/include/core)
+include_directories(CyC_inference/include)
+include_directories(CyC_inference/include/core)
 
 # Include 3rdParty library directories
 link_directories(${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
