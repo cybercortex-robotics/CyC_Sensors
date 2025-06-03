@@ -104,10 +104,6 @@ bool CImuUnity_API::ExtractImuData(enet_uint8* packet, size_t packetSize)
         m_imu.magnet.x() = std::stof(StringImuData[6]);
         m_imu.magnet.y() = std::stof(StringImuData[7]);
         m_imu.magnet.z() = std::stof(StringImuData[8]);
-        m_imu.quat.update(std::stof(StringImuData[9]), 
-            std::stof(StringImuData[10]), 
-            std::stof(StringImuData[11]), 
-            std::stof(StringImuData[12]));
         
         ret = true;
     }

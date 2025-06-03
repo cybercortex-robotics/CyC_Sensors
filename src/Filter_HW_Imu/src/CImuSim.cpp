@@ -37,7 +37,6 @@ void CImuSim::step(const float& _dt, const CPose& _pose, const Eigen::Vector3f& 
     _out_imu.acc = linear_acc;
     _out_imu.gyro = angular_vel;
     _out_imu.magnet = magnetic_field;
-    _out_imu.quat = quat.to_vector();
 
     m_PrevPose = _pose;
     m_PrevLinearVelocity = _linear_velocity;

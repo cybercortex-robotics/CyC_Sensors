@@ -4,6 +4,7 @@
 #include "CyC_TYPES.h"
 #include <iostream>
 #include "happly.h"
+#include "CLivoxApi.h"
 
 void showUsage()
 {

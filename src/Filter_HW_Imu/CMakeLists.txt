@@ -4,26 +4,14 @@
 set(FILTER_NAME Filter_HW_Imu)
 
 add_library(${FILTER_NAME} SHARED
-    ${CMAKE_SOURCE_DIR}/3rdParty/rs232/rs232.h 
-    ${CMAKE_SOURCE_DIR}/3rdParty/rs232/rs232.c
+    ${CyC_THIRD_PARTY}/rs232/rs232.h 
+    ${CyC_THIRD_PARTY}/rs232/rs232.c
     src/CImuUtils.h
     src/CImuUtils.cpp
     src/CImuFilter.h
     src/CImuFilter.cpp
-    src/CMadgwick.h
-    src/CMadgwick.cpp
     src/CImuSim.h
     src/CImuSim.cpp
-    src/madgwick/Fusion.h
-    src/madgwick/FusionAhrs.c
-    src/madgwick/FusionAhrs.h
-    src/madgwick/FusionAxes.h
-    src/madgwick/FusionCalibration.h
-    src/madgwick/FusionCompass.c
-    src/madgwick/FusionCompass.h
-    src/madgwick/FusionMath.h
-    src/madgwick/FusionOffset.c
-    src/madgwick/FusionOffset.h
     src/api/MPU9250/CImuMPU9250_API.h
     src/api/MPU9250/CImuMPU9250_API.cpp
     src/api/brick/CImuBrick_API.h
@@ -50,6 +38,9 @@ target_link_libraries(${FILTER_NAME}
         enet
         CycCore
         CycToolkit
+        libconfig++
+        libcsv
+        ${CyC_OPENCV_WORLD}
         Robot_RealSense)
 
 if (WIN32)
@@ -87,32 +78,11 @@ set_target_properties(${FILTER_NAME} PROPERTIES
 # Test units
 add_executable(tu_Imu
     src/tu_Imu.cpp
-    src/integration_base.h
     src/api/MPU9250/CImuMPU9250_API.h
     src/api/MPU9250/CImuMPU9250_API.cpp
-    src/CMadgwick.h
-    src/CMadgwick.cpp
-    src/madgwick/Fusion.h
-    src/madgwick/FusionAhrs.c
-    src/madgwick/FusionAhrs.h
-    src/madgwick/FusionAxes.h
-    src/madgwick/FusionCalibration.h
-    src/madgwick/FusionCompass.c
-    src/madgwick/FusionCompass.h
-    src/madgwick/FusionMath.h
-    src/madgwick/FusionOffset.c
-    src/madgwick/FusionOffset.h
-    ${CMAKE_SOURCE_DIR}/3rdParty/rs232/rs232.h 
-    ${CMAKE_SOURCE_DIR}/3rdParty/rs232/rs232.c
-    ${CMAKE_SOURCE_DIR}/src/cyc_filters/Filters_Vision/Filter_Vision_VisualSlam/src/CImuPreintegrator.h
-    ${CMAKE_SOURCE_DIR}/src/cyc_filters/Filters_Vision/Filter_Vision_VisualSlam/src/CImuPreintegrator.cpp
-    ${CMAKE_SOURCE_DIR}/src/cyc_filters/Filters_Vision/Filter_Vision_VisualSlam/src/CImuStatePredictor.h
-    ${CMAKE_SOURCE_DIR}/src/cyc_filters/Filters_Vision/Filter_Vision_VisualSlam/src/CImuStatePredictor.cpp)
+    ${CyC_THIRD_PARTY}/rs232/rs232.h 
+    ${CyC_THIRD_PARTY}/rs232/rs232.c)
 
-target_include_directories(tu_Imu
-    PUBLIC
-        ${CMAKE_SOURCE_DIR}/src/cyc_filters/Filters_Vision/Filter_Vision_VisualSlam/src/Sophus)
-    
 target_link_directories(tu_Imu
     PUBLIC 
         ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})

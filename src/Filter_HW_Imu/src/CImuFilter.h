@@ -34,10 +34,9 @@
 #include "api/MPU9250/CImuMPU9250_API.h"
 #include "api/brick/CImuBrick_API.h"
 #include "api/unity/CImuUnity_API.h"
-#include "CMadgwick.h"
 #include "CImuSim.h"
 #include "math/CGeometry.h"
-#include "CRealSense2API.h"
+#include "CRealSense2Api.h"
 
 #ifdef __ANDROID_API__
 #include <CNativeSensor_API.h>
@@ -65,11 +64,6 @@ private:
     CImuUtils::ImuApiType   m_ApiType = CImuUtils::Imu_API_SIM;
     CycImus                 m_ImuCache;
     
-    // Attitude estimator (Madgwick filter)
-    bool                    m_bUseMadgwick = false;
-    bool                    m_bUseMagnetometer = false;
-    std::unique_ptr<CMadgwick>  m_pMadgwick;
-    
     // Imu simulation
     CImuSim         m_ImuSim;
     CCycFilterBase* m_pVehStateFilter = nullptr;
@@ -79,11 +73,11 @@ private:
     Eigen::Vector2f m_PrevLinVel_W = Eigen::Vector2f(0.f, 0.f);
     Eigen::Vector2f m_PrevLocation = Eigen::Vector2f(0.f, 0.f);
     Eigen::Vector2f m_PrevPrevLocation = Eigen::Vector2f(0.f, 0.f);
-    float       m_PrevDt = 0.f;
+    float           m_PrevDt = 0.f;
     
     // APIs
     CImuMPU9250_API m_ImuMPU9250_API;
-    std::shared_ptr<CRealSense2API> m_RealSense;
+    std::shared_ptr<CRealSense2Api> m_RealSense;
 
     // Updates pose of the IMU
     // TODO: check if we need this!!!

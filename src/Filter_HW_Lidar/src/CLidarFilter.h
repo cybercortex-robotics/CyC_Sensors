@@ -14,6 +14,7 @@
 #include "sensors/CLidarSensorModel.h"
 #include "happly.h"
 #include "api/Driver_RpLidar_A1_M8/CRpLidarApi.h"
+#include <lslidar.hpp>
 
 class CHesaiLidarInterface;
 class CLidarSlamwareInterface;
@@ -24,6 +25,7 @@ enum LidarInterfaceType
 	Lidar_Rp_INTERFACE = 1,
 	Lidar_Hessai_INTERFACE = 2,
     Lidar_Slamware_INTERFACE = 3,
+	Lidar_LSLidar_INTERFACE = 4,
 };
 
 class CLidarFilter : public CCycFilterBase
@@ -51,7 +53,12 @@ private:
 
 	// Pose input data filter
 	CCycFilterBase*	m_pPoseDataFilter = nullptr;
-	CyC_TIME_UNIT     m_lastReadTsPose = 0;
+	CyC_TIME_UNIT   m_lastReadTsPose = 0;
+	CLsLidar        m_lslidar;
+
+	std::mutex m_mutex;
+	std::thread m_thread;
+	std::vector<ScanPoint> m_lidar_points;
 };
 
 #endif //CLIDARFILTER_H_

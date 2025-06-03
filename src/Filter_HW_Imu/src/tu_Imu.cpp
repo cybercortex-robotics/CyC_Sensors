@@ -6,19 +6,15 @@
 #include <iostream>
 #include <assert.h>
 #include <iomanip>
-#include "CMadgwick.h"
 #include "CImuUtils.h"
 #include "env/CQuaternion.h"
 #include "os/CFileUtils.h"
 #include "os/CDataBlockReader.h"
 #include "sensors/CImuSensorModel.h"
 #include "control/CStateSpaceModelVehicle.h"
-#include "../../../Filters_Vision/Filter_Vision_VisualSlam/src/CImuPreintegrator.h"
-#include "../../../Filters_Vision/Filter_Vision_VisualSlam/src/CImuStatePredictor.h"
-#include "integration_base.h"
 #include "CImuFilter.h"
 #include "api/MPU9250/CImuMPU9250_API.h"
-#include "CRealSense2API.h"
+#include "CRealSense2Api.h"
 
 std::unique_ptr<CImuSensorModel> pImuSensorModel = nullptr;
 
@@ -26,13 +22,10 @@ std::unique_ptr<CImuSensorModel> pImuSensorModel = nullptr;
 Eigen::Vector3f m_Position = Eigen::Vector3f(-71.106003f, 77.423599f, 0.f);
 Eigen::Vector3f m_LinearVelocity = Eigen::Vector3f::Zero();
 
-// Attitude estimation algorithm (Madgwick filter)
-CMadgwick m_Madgwick(true);
-
 // APIs
 CImuUtils::ImuApiType m_ApiType = CImuUtils::Imu_API_SIM;
 CImuMPU9250_API m_ImuMPU9250_API;
-std::shared_ptr<CRealSense2API> m_RealSense2 = CRealSense2API::create_instance();
+std::shared_ptr<CRealSense2Api> m_RealSense2 = CRealSense2Api::create_instance();
 
 void showUsage()
 {
@@ -128,7 +121,6 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
     pImuSensorModel = std::make_unique<CImuSensorModel>(sImuCalibFile);
-    Bias bias{ pImuSensorModel->getBiasAcc(), pImuSensorModel->getBiasGyro() };
 
     // Check if a database has been given
     if (bUseDB)
@@ -199,7 +191,6 @@ int main(int argc, char** argv)
             {
                 CycImu imu_curr;
                 m_ImuMPU9250_API.read(imu_curr);
-                Eigen::Vector3f euler_ccr_DEG = imu_curr.quat.to_euler_ZYX() * RAD2DEG;
                 imu_cache.emplace_back(imu_curr);
             }
             else if (m_ApiType == CImuUtils::Imu_API_REALSENSE)
@@ -241,6 +232,7 @@ int main(int argc, char** argv)
             
             if (counter % 10 == 0 && imu_cache.size() > 1)
             {
+                Bias bias;
                 std::cout << "vinsmono:\t" << integrate_vinsmono(imu_cache, bias) << std::endl;
                 std::cout << "orbslam:\t" << integrate_orbslam3(imu_cache, bias) << std::endl;
 
@@ -271,7 +263,7 @@ int main(int argc, char** argv)
 
 CPose integrate_vinsmono(const CycImus& _imu_cache, const Bias _bias)
 {
-    IntegrationBase pre_integration(_imu_cache.front().acc.cast<double>(), _imu_cache.front().gyro.cast<double>(), 
+    /*IntegrationBase pre_integration(_imu_cache.front().acc.cast<double>(), _imu_cache.front().gyro.cast<double>(), 
         _bias.m_BiasAcc.cast<double>(), _bias.m_BiasGyro.cast<double>());
 
     for (size_t i = 1; i < _imu_cache.size(); ++i)
@@ -281,19 +273,21 @@ CPose integrate_vinsmono(const CycImus& _imu_cache, const Bias _bias)
     }
 
     return CPose(pre_integration.delta_p.x(), pre_integration.delta_p.y(), pre_integration.delta_p.z(),
-        pre_integration.delta_q.x(), pre_integration.delta_q.y(), pre_integration.delta_q.z(), pre_integration.delta_q.w(), -1);
+        pre_integration.delta_q.x(), pre_integration.delta_q.y(), pre_integration.delta_q.z(), pre_integration.delta_q.w(), -1);*/
+    return CPose();
 }
 
 CPose integrate_orbslam3(const CycImus& _imu_cache, const Bias _bias)
 {
-    CImuPreintegrator integ(_bias, pImuSensorModel.get());
+    /*CImuPreintegrator integ(_bias, pImuSensorModel.get());
     integ.integrate(_imu_cache);
 
     std::cout << "noise = " << integ.Nga.toDenseMatrix() << std::endl;
     std::cout << "Walk = " << integ.NgaWalk.toDenseMatrix() << std::endl;
 
     CQuaternion quat(integ.GetDeltaRotation(_bias));
-    return CPose(integ.GetDeltaPosition(_bias), quat.to_vector());
+    return CPose(integ.GetDeltaPosition(_bias), quat.to_vector());*/
+    return CPose();
 }
 
 void database_estimation(const std::string& _ccr_db_folder, const CyC_INT& _imu_filter_id, const CyC_INT& _state_filter_id)
@@ -393,16 +387,16 @@ void database_estimation(const std::string& _ccr_db_folder, const CyC_INT& _imu_
 void update(const float& _dt, CycImu& _imu)
 {
     // R from Fusion Madgwick library
-    m_Madgwick.update(_dt, _imu);
+    //m_Madgwick.update(_dt, _imu);
 
-    Eigen::Matrix3f R = _imu.quat.to_rotmat();
+    //Eigen::Matrix3f R = _imu.quat.to_rotmat();
 
-    const Eigen::Vector3f acc(_imu.acc.x(), _imu.acc.y(), (_imu.acc.z() + GRAVITY));
+    //const Eigen::Vector3f acc(_imu.acc.x(), _imu.acc.y(), (_imu.acc.z() + GRAVITY));
 
     // acc and vel are ego coordinates
-    m_LinearVelocity += acc * _dt;
+    //m_LinearVelocity += acc * _dt;
 
-    // position is in global coordinates
-    const Eigen::Vector3f vRotated = R * m_LinearVelocity;
-    m_Position += vRotated * _dt;
+    // Position is in global coordinates
+    //const Eigen::Vector3f vRotated = R * m_LinearVelocity;
+    //m_Position += vRotated * _dt;
 }

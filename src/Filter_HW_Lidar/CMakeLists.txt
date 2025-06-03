@@ -3,6 +3,8 @@
 
 set(FILTER_NAME Filter_HW_Lidar)
 
+add_subdirectory(src/api/LSLidar)
+
 if (NOT WIN32)
     #find_package(Boost REQUIRED)
     #find_package(PCL REQUIRED COMPONENTS common)
@@ -31,6 +33,7 @@ target_include_directories(${FILTER_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/api/HesaiLidar
         ${CMAKE_CURRENT_SOURCE_DIR}/src/api/HesaiLidar/include
         ${CMAKE_CURRENT_SOURCE_DIR}/src/api/HesaiLidar/include/PandarGeneralRaw/include
+        ${CMAKE_SOURCE_DIR}/src/cyc_robots/Livox/src
         ${Boost_INCLUDE_DIRS}
         ${PCL_INCLUDE_DIRS})
 
@@ -41,9 +44,12 @@ target_link_directories(${FILTER_NAME}
 target_link_libraries(${FILTER_NAME}
     PUBLIC
         CycCore
-            CycToolkit)
+        CycToolkit
+        lslidar
+        Robot_Livox)
         
 if (NOT WIN32)
+    # Hesai Pandar library
     #target_link_libraries(${FILTER_NAME}
     #    PUBLIC
     #        ${Boost_LIBRARIES}
@@ -77,12 +83,8 @@ set_target_properties(${FILTER_NAME} PROPERTIES
 )
 
 # Test unit
-add_executable(tu_Lidar src/tu_lidar.cpp)
+add_executable(tu_Lidar src/tu_Lidar.cpp)
+target_include_directories(tu_Lidar PUBLIC ${CMAKE_SOURCE_DIR}/src/cyc_robots/Livox/src)
+target_link_directories(tu_Lidar PUBLIC ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
+target_link_libraries(tu_Lidar PUBLIC CycToolkit Robot_Livox)
 
-target_link_libraries(tu_Lidar
-    PUBLIC
-		CycToolkit)
-
-target_link_directories(tu_Lidar
-    PUBLIC 
-        ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})

@@ -34,9 +34,14 @@ if (NOT ANDROID)
 endif (NOT ANDROID)
 
 # Copy inference app
+if(WIN32)
+  set(EXE_EXT ".exe")
+else()
+  set(EXE_EXT "")
+endif()
 configure_file(
-  ${CMAKE_SOURCE_DIR}/CyC_inference/bin/${CyC_LIBS_BINARY_KEY}/App_CycCore.exe
-  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/App_CycCore.exe
+  ${CMAKE_SOURCE_DIR}/CyC_inference/bin/${CyC_LIBS_BINARY_KEY}/App_CycCore${EXE_EXT}
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/App_CycCore${EXE_EXT}
   COPYONLY
 )
 
@@ -55,3 +60,5 @@ add_subdirectory(CyC_Robots/src)
 # Hardware sensory filters
 add_cyc_filter(Filter_HW_MonoCamera src/Filter_HW_MonoCamera)
 add_cyc_filter(Filter_HW_RgbdCamera src/Filter_HW_RgbdCamera)
+add_cyc_filter(Filter_HW_Imu src/Filter_HW_Imu)
+add_cyc_filter(Filter_HW_Lidar src/Filter_HW_Lidar)

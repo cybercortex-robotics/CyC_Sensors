@@ -1,7 +1,3 @@
-[submodule "CyC_Robots"]
-	path = CyC_Robots
-	url = https://github.com/cybercortex-robotics/CyC_Robots.git
-	branch = main
 [submodule "CyC_inference"]
 	path = CyC_inference
 	url = https://github.com/cybercortex-robotics/CyC_inference.git

@@ -51,9 +51,9 @@ CImuFilter::CImuFilter(const ConfigFilterParameters& _params) :
     // Check if a realsense robot is already registered
     if (_params.pSingletonRegistry != nullptr)
     {
-        if (_params.pSingletonRegistry->get<CRealSense2API>() == nullptr)
-            _params.pSingletonRegistry->registerInstance<CRealSense2API>();
-        m_RealSense = _params.pSingletonRegistry->get<CRealSense2API>();
+        if (_params.pSingletonRegistry->get<CRealSense2Api>() == nullptr)
+            _params.pSingletonRegistry->registerInstance<CRealSense2Api>();
+        m_RealSense = _params.pSingletonRegistry->get<CRealSense2Api>();
     }
 
     if (!m_CustomParameters["interface"].empty())
@@ -65,19 +65,6 @@ CImuFilter::CImuFilter(const ConfigFilterParameters& _params) :
         spdlog::warn("Filter [{}-{}]: {}: No interface type defined. Switching to simulation.", getFilterKey().nCoreID, getFilterKey().nFilterID, typeid(*this).name());
         m_ApiType = CImuUtils::Imu_API_SIM;
     }
-
-    if (m_CustomParameters.find("use_magnetometer") != m_CustomParameters.end())
-    {
-        CStringUtils::stringToBool(m_CustomParameters["use_magnetometer"], m_bUseMagnetometer);
-    }
-
-    if (m_CustomParameters.find("use_madgwick") != m_CustomParameters.end())
-    {
-        CStringUtils::stringToBool(m_CustomParameters["use_madgwick"], m_bUseMadgwick);
-    }
-
-    // Init the Madgwick filter
-    m_pMadgwick = std::make_unique<CMadgwick>(m_bUseMagnetometer);
 
     // Initial zero state
     m_VehicleState.x_hat = Eigen::VectorXf(NO_VEHICLE_MODEL_STATES + 1);
@@ -495,7 +482,7 @@ bool CImuFilter::process()
             imu.magnet.x() = ego_data.magnetic_field.x;
             imu.magnet.y() = ego_data.magnetic_field.y;
             imu.magnet.z() = ego_data.magnetic_field.z;
-            imu.quat.update(ego_data.quaternion.x, ego_data.quaternion.y, ego_data.quaternion.z, ego_data.quaternion.w);
+            //imu.quat.update(ego_data.quaternion.x, ego_data.quaternion.y, ego_data.quaternion.z, ego_data.quaternion.w);
 
             m_ImuCache.emplace_back(imu);
 

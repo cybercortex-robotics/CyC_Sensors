@@ -30,8 +30,10 @@ static int StringToEnumType(const std::string& str_ctrl_name)
 		return Lidar_Rp_INTERFACE;
 	else if (str_ctrl_name.compare("hessai") == 0)
 		return Lidar_Hessai_INTERFACE;
-    else if (str_ctrl_name.compare("slamware") == 0)
-        return Lidar_Slamware_INTERFACE;
+	else if (str_ctrl_name.compare("slamware") == 0)
+		return Lidar_Slamware_INTERFACE;
+	else if (str_ctrl_name == "lslidar")
+		return Lidar_LSLidar_INTERFACE;
 
 	return Lidar_SIM_INTERFACE;
 }
@@ -62,7 +64,7 @@ CLidarFilter::CLidarFilter(const ConfigFilterParameters params) :
 	// Load the sensor model
 	if (!m_CustomParameters.at("CalibrationFile").empty())
 	{
-		this->m_pSensorModel = new CLidarSensorModel(m_CustomParameters.at("CalibrationFile"));
+		this->m_pSensorModel = new CLidarSensorModel(fs::path(params.sGlobalBasePath) / m_CustomParameters.at("CalibrationFile"));
 	}
 }
 
@@ -105,6 +107,34 @@ bool CLidarFilter::enable()
             }
 #endif
         }
+		else if (m_InterfaceType == Lidar_LSLidar_INTERFACE)
+		{
+			if (!m_lslidar.open(m_CustomParameters["port"]))
+			{
+				log_error("Failed to connect to LSLidar on port {}", m_CustomParameters["port"]);
+				return false;
+			}
+			else
+			{
+				log_info("Connected to LSLidar!");
+				if (!m_lslidar.init())
+				{
+					log_error("Failed to init LSLidar!");
+					return false;
+				}
+				else
+				{
+					log_info("Initialized LSLidar!");
+					m_thread = std::thread{ [this]() {
+						while (isRunning() && m_lslidar.polling())
+						{
+							std::unique_lock lock{ m_mutex };
+							m_lidar_points = m_lslidar.get();
+						}
+					} };
+				}
+			}
+		}
 	}
 
 	spdlog::info("Filter [{}-{}]: CLidarFilter::enable() successful", getFilterKey().nCoreID, getFilterKey().nFilterID);
@@ -117,6 +147,11 @@ bool CLidarFilter::disable()
 {
 	if (isRunning())
 		stop();
+
+	if (m_thread.joinable())
+	{
+		m_thread.join();
+	}
 	
 	m_bIsEnabled = false;
 	return true;
@@ -125,7 +160,7 @@ bool CLidarFilter::disable()
 bool CLidarFilter::process()
 {
 	bool bReturn(false);
-	m_LidarVoxels.clear();
+	const CLidarSensorModel* lidar_sensor_model = static_cast<CLidarSensorModel*>(this->m_pSensorModel);
 
 	CPose pose;
 	if (getLidarPose(pose))
@@ -133,6 +168,8 @@ bool CLidarFilter::process()
 
 	if (m_InterfaceType == Lidar_SIM_INTERFACE)
 	{
+		m_LidarVoxels.clear();
+
 		CycVoxel vx1(3.f, 0.f, 0.f);
 		CycVoxel vx2(3.f, -2.f, 0.f);
 		CycVoxel vx3(4.f, 1.f, 0.f);
@@ -145,6 +182,8 @@ bool CLidarFilter::process()
 	}
 	else if(m_InterfaceType == Lidar_Hessai_INTERFACE)
     {
+		m_LidarVoxels.clear();
+
 #ifdef GENIUS_BOARD
 	    m_HesaiLidarInterface->getLidarOutputVoxels(m_LidarVoxels);
 
@@ -154,6 +193,8 @@ bool CLidarFilter::process()
     }
     else if (m_InterfaceType == Lidar_Slamware_INTERFACE)
     {
+		m_LidarVoxels.clear();
+
 #ifdef GENIUS_BOARD
         std::vector<lidar_point> points;
         if (m_SlamwareLidarInterface->process(points))
@@ -175,6 +216,32 @@ bool CLidarFilter::process()
         }
 #endif
     }
+	else if (m_InterfaceType == Lidar_LSLidar_INTERFACE)
+	{
+		std::vector<ScanPoint> lidar_points;
+		{
+			std::scoped_lock lock{ m_mutex };
+			lidar_points = m_lidar_points;
+		}
+
+		for (auto const& pt : lidar_points)
+		{
+			if (pt.range >= lidar_sensor_model->min_range() && pt.range <= lidar_sensor_model->max_range())
+			{
+				CycVoxel vx{ cosf(DEG2RAD * (float)pt.degree) * (float)pt.range, sinf(DEG2RAD * (float)pt.degree) * (float)pt.range, 0.f };
+				m_LidarVoxels.emplace_back(vx);
+			}
+		}
+
+		if (m_LidarVoxels.size() > lidar_sensor_model->num_points())
+		{
+			m_LidarVoxels.erase(
+				m_LidarVoxels.begin(),
+				std::next(m_LidarVoxels.begin(), m_LidarVoxels.size() - lidar_sensor_model->num_points()));
+		}
+
+		bReturn = !m_LidarVoxels.empty();
+	}
 
 	if (bReturn)
 	{
@@ -223,21 +290,6 @@ void CLidarFilter::loadFromDatastream(const std::string& _datastream_entry, cons
         stream_in.read((char*)&voxel.pt3d.w(), sizeof(voxel.pt3d.w()));
     }
 	
-	/*
-	happly::PLYData ply(lidar_path);
-	CycVoxels lidar_voxels;
-	if (ply.getElementNames().size() > 0)
-	{
-		std::string elemName = ply.getElementNames()[0];
-		std::vector<float> X = ply.getElement(elemName).getProperty<float>("x");
-		std::vector<float> Y = ply.getElement(elemName).getProperty<float>("y");
-		std::vector<float> Z = ply.getElement(elemName).getProperty<float>("z");
-
-		for (size_t i = 0; i < X.size(); ++i)
-			lidar_voxels.push_back(CycVoxel(X[i], Y[i], Z[i]));
-	}
-	*/
-
 	const auto tTimestampStop  = row.get<CyC_TIME_UNIT>(TS_STOP);
     const auto tSamplingTime   = row.get<CyC_TIME_UNIT>(SAMPLING_TIME);
     const auto tTimestampStart = tTimestampStop - tSamplingTime;
