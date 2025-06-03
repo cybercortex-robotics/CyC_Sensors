@@ -35,8 +35,8 @@ endif (NOT ANDROID)
 
 # Copy inference app
 configure_file(
-  ${CMAKE_SOURCE_DIR}/CyC_inference/bin/${CyC_LIBS_BINARY_KEY}/App_CcrCore.exe
-  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/App_CcrCore.exe
+  ${CMAKE_SOURCE_DIR}/CyC_inference/bin/${CyC_LIBS_BINARY_KEY}/App_CycCore.exe
+  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/App_CycCore.exe
   COPYONLY
 )
 
