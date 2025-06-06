@@ -2,3 +2,8 @@
 	path = CyC_inference
 	url = https://github.com/cybercortex-robotics/CyC_inference.git
 	branch = main
+[submodule "CyC_Robots"]
+	path = CyC_Robots
+	url = https://github.com/cybercortex-robotics/CyC_Robots.git
+	branch = main
+	update = remote
