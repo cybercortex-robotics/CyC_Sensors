@@ -2,7 +2,7 @@
 # Author: Sorin Mihai Grigorescu
 
 cmake_minimum_required(VERSION 3.10)
-project(CyC_HW_Sensors)
+project(CyC_Sensors)
 set(CMAKE_CXX_STANDARD 17)
 
 ######## USER DEFINED VARIABLES ########
