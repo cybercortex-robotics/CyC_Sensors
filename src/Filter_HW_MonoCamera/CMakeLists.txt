@@ -38,7 +38,7 @@ endif(RASPBERRY_PI)
 target_link_libraries(${FILTER_NAME}
     PUBLIC
         enet
-        libconfig++
+        config++
         libcsv
         CycCore
         CycToolkit

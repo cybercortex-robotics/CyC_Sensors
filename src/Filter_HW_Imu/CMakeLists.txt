@@ -38,7 +38,7 @@ target_link_libraries(${FILTER_NAME}
         enet
         CycCore
         CycToolkit
-        libconfig++
+        config++
         libcsv
         ${CyC_OPENCV_WORLD}
         Robot_RealSense)

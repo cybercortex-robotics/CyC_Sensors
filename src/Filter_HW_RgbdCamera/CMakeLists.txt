@@ -33,7 +33,7 @@ target_link_libraries(${FILTER_NAME}
         Robot_RealSense
         CycCore
         CycToolkit
-        libconfig++
+        config++
         libcsv
         ${CyC_OPENCV_WORLD})
 
@@ -116,7 +116,7 @@ target_link_libraries(tu_RgbdCamera
         #${FILTER_NAME}
         #Filter_Visualization_Octoviz
         CycToolkit
-        libconfig++
+        config++
         libcsv
         ${CyC_OPENCV_WORLD}
         octomap
@@ -138,6 +138,6 @@ target_link_directories(tu_RgbdCamera_DepthEncoding
 target_link_libraries(tu_RgbdCamera_DepthEncoding
     PUBLIC
         CycToolkit
-        libconfig++
+        config++
         libcsv
         ${CyC_OPENCV_WORLD})
