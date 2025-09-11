@@ -47,10 +47,15 @@ target_link_libraries(${FILTER_NAME}
         CycToolkit
         lslidar
         Robot_Livox
-        libconfig++
-        libcsv
+        fmt
         ${CyC_OPENCV_WORLD})
-        
+
+if (WIN32)
+    target_link_libraries(${FILTER_NAME} PUBLIC libconfig++)
+else ()
+    target_link_libraries(${FILTER_NAME} PUBLIC config++)
+endif (WIN32)
+
 if (NOT WIN32)
     # Hesai Pandar library
     #target_link_libraries(${FILTER_NAME}

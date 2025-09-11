@@ -5,7 +5,7 @@
 #include <sensors/CPinholeCameraSensorModel.h>
 #include <vision/CDepthImageProcessing.h>
 #include <os/CFilterUtils.h>
-#include <csv_reader.h>
+#include <os/CCsvReader.h>
 
 #define DYNALO_EXPORT_SYMBOLS
 #include <dynalo/symbol_helper.hpp>

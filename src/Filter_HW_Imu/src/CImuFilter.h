@@ -25,7 +25,7 @@
 #include "CyC_TYPES.h"
 #include <fstream>
 #include <algorithm>
-#include <csv_reader.h>
+#include <os/CCsvReader.h>
 #include "CCycFilterBase.h"
 #include "CImuUtils.h"
 #include "os/CFilterUtils.h"

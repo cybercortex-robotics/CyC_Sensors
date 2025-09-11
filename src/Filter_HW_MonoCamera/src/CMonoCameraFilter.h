@@ -11,7 +11,7 @@
 #include "CCycFilterBase.h"
 #include "os/CFilterUtils.h"
 #include "sensors/CPinholeCameraSensorModel.h"
-#include <csv_reader.h>
+#include <os/CCsvReader.h>
 #include "vision/CProjectiveGeometry.h"
 #include "vision/CImageDisplayUtils.h"
 #include "vision/CTriangulation.h"

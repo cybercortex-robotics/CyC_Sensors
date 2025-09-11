@@ -34,7 +34,6 @@ target_link_libraries(${FILTER_NAME}
         CycCore
         CycToolkit
         config++
-        libcsv
         ${CyC_OPENCV_WORLD})
 
 if (WIN32)
@@ -55,6 +54,7 @@ elseif (RASPBERRY_PI)
             #${CMAKE_SOURCE_DIR}/3rdParty/OpenNI2/linux-gcc-arm-x86/lib/libOpenNI2.a
             realsense2
             realsense-file
+            fmt
             fw
             usb-1.0)
 else (RASPBERRY_PI)
@@ -63,6 +63,7 @@ else (RASPBERRY_PI)
             #${CMAKE_SOURCE_DIR}/3rdParty/OpenNI2/linux-gcc-x64/Redist/libOpenNI2.so
             realsense2
             realsense-file
+            fmt
             fw
             usb-1.0)
 endif(MSVC)
@@ -117,12 +118,12 @@ target_link_libraries(tu_RgbdCamera
         #Filter_Visualization_Octoviz
         CycToolkit
         config++
-        libcsv
         ${CyC_OPENCV_WORLD}
         octomap
         octomath
         #glut64
-        Robot_RealSense)
+        Robot_RealSense
+        fmt)
 
 if (NOT WIN32)
     target_link_libraries(tu_RgbdCamera PUBLIC pthread)
@@ -139,5 +140,5 @@ target_link_libraries(tu_RgbdCamera_DepthEncoding
     PUBLIC
         CycToolkit
         config++
-        libcsv
-        ${CyC_OPENCV_WORLD})
+        ${CyC_OPENCV_WORLD}
+        fmt)

@@ -39,7 +39,7 @@ target_link_libraries(${FILTER_NAME}
     PUBLIC
         enet
         config++
-        libcsv
+        fmt
         CycCore
         CycToolkit
         ${CyC_OPENCV_WORLD})

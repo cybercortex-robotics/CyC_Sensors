@@ -3,7 +3,7 @@
 
 #include "CGpsFilter.h"
 #include "rs232.h"
-#include <csv_reader.h>
+#include <os/CCsvReader.h>
 #include "interfaces/ublox_gps/UbloxGPS.h"
 
 #define DYNALO_EXPORT_SYMBOLS

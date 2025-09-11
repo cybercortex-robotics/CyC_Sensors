@@ -8,7 +8,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
-#include <csv_reader.h>
+#include <os/CCsvReader.h>
 #include "CCycFilterBase.h"
 #include <os/CFilterUtils.h>
 #include "sensors/CLidarSensorModel.h"

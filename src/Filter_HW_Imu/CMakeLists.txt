@@ -39,7 +39,6 @@ target_link_libraries(${FILTER_NAME}
         CycCore
         CycToolkit
         config++
-        libcsv
         ${CyC_OPENCV_WORLD}
         Robot_RealSense)
 
@@ -90,10 +89,10 @@ target_link_directories(tu_Imu
 target_link_libraries(tu_Imu
     PUBLIC
         ${FILTER_NAME}
-        libcsv
         CycToolkit
         ${CyC_OPENCV_WORLD}
-        Robot_RealSense)
+        Robot_RealSense
+        fmt)
 
 if (Build_Robot_UnitreeA1)
     add_definitions(-DENABLE_UNITREEA1)
