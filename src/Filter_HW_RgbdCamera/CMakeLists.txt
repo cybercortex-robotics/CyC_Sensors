@@ -33,14 +33,12 @@ target_link_libraries(${FILTER_NAME}
         Robot_RealSense
         CycCore
         CycToolkit
-        config++
         ${CyC_OPENCV_WORLD})
 
 if (WIN32)
-    target_link_libraries(${FILTER_NAME}
-        PUBLIC
-            ws2_32
-            winmm)
+    target_link_libraries(${FILTER_NAME} PUBLIC libconfig++ ws2_32 winmm)
+else ()
+    target_link_libraries(${FILTER_NAME} PUBLIC config++)
 endif()
 
 if (MSVC)
