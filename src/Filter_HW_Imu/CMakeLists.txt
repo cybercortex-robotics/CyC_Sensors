@@ -38,15 +38,13 @@ target_link_libraries(${FILTER_NAME}
         enet
         CycCore
         CycToolkit
-        config++
         ${CyC_OPENCV_WORLD}
         Robot_RealSense)
 
 if (WIN32)
-    target_link_libraries(${FILTER_NAME}
-        PUBLIC
-            ws2_32
-            winmm)
+    target_link_libraries(${FILTER_NAME} PUBLIC libconfig++ ws2_32 winmm)
+else ()
+    target_link_libraries(${FILTER_NAME} PUBLIC config++)
 endif()
 
 # Build the filter into the filters folder
