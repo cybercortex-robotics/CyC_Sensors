@@ -115,15 +115,16 @@ target_link_libraries(tu_RgbdCamera
         #${FILTER_NAME}
         #Filter_Visualization_Octoviz
         CycToolkit
-        config++
         ${CyC_OPENCV_WORLD}
         octomap
         octomath
         #glut64
         Robot_RealSense)
 
-if (NOT WIN32)
-    target_link_libraries(tu_RgbdCamera PUBLIC pthread fmt)
+if (WIN32)
+    target_link_libraries(tu_RgbdCamera PUBLIC libconfig++)
+else ()
+    target_link_libraries(tu_RgbdCamera PUBLIC config++ pthread fmt)
 endif()
 
 add_executable(tu_RgbdCamera_DepthEncoding
@@ -139,6 +140,8 @@ target_link_libraries(tu_RgbdCamera_DepthEncoding
         config++
         ${CyC_OPENCV_WORLD})
 
-if (NOT WIN32)
-    target_link_libraries(tu_RgbdCamera_DepthEncoding PUBLIC fmt)
+if (WIN32)
+    target_link_libraries(tu_RgbdCamera_DepthEncoding PUBLIC libconfig++)
+else ()
+    target_link_libraries(tu_RgbdCamera_DepthEncoding PUBLIC config++ pthread fmt)
 endif()

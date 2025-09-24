@@ -92,6 +92,12 @@ target_link_libraries(tu_Imu
         Robot_RealSense
         fmt)
 
+if (WIN32)
+    target_link_libraries(tu_Imu PUBLIC libconfig++)
+else ()
+    target_link_libraries(tu_Imu PUBLIC config++)
+endif()
+
 if (Build_Robot_UnitreeA1)
     add_definitions(-DENABLE_UNITREEA1)
     target_link_libraries(${FILTER_NAME}
