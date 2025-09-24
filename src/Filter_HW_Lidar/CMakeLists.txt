@@ -37,17 +37,19 @@ target_include_directories(${FILTER_NAME}
         ${Boost_INCLUDE_DIRS}
         ${PCL_INCLUDE_DIRS})
 
-target_link_directories(${FILTER_NAME}
-    PUBLIC 
-        ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
+target_link_directories(${FILTER_NAME} PUBLIC ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
         
 target_link_libraries(${FILTER_NAME}
     PUBLIC
         CycCore
         CycToolkit
         lslidar
-        Robot_Livox
         ${CyC_OPENCV_WORLD})
+
+if(DEFINED CACHE{Robot_Livox_PATH})
+    target_link_directories(${FILTER_NAME} PUBLIC ${Robot_Livox_PATH})
+    target_link_libraries(${FILTER_NAME} PUBLIC Robot_Livox)
+endif()
 
 if (WIN32)
     target_link_libraries(${FILTER_NAME} PUBLIC libconfig++)
@@ -93,7 +95,11 @@ set_target_properties(${FILTER_NAME} PROPERTIES
 add_executable(tu_Lidar src/tu_Lidar.cpp)
 target_include_directories(tu_Lidar PUBLIC ${CMAKE_SOURCE_DIR}/src/cyc_robots/Livox/src)
 target_link_directories(tu_Lidar PUBLIC ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
-target_link_libraries(tu_Lidar PUBLIC CycToolkit Robot_Livox ${CyC_OPENCV_WORLD})
+target_link_libraries(tu_Lidar PUBLIC CycToolkit ${CyC_OPENCV_WORLD})
+if(DEFINED CACHE{Robot_Livox_PATH})
+    target_link_directories(tu_Lidar PUBLIC ${Robot_Livox_PATH})
+    target_link_libraries(tu_Lidar PUBLIC Robot_Livox)
+endif()
 if (WIN32)
     target_link_libraries(tu_Lidar PUBLIC libconfig++)
 else ()

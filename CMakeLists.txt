@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CyC_FILTERS_PATH "filters")
 
 # Folder with 3rdParty libraries
-set(CyC_THIRD_PARTY "/home/sorin/dev/src/CyberCortex.AI/core/3rdParty")
+set(CyC_THIRD_PARTY "c:/dev/src/CyberCortex.AI/core/3rdParty")
 
 # Define the OpenCV version
 set(CyC_OPENCV_VERSION "4.9.0")
