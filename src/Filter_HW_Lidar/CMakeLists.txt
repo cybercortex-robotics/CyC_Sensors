@@ -47,13 +47,12 @@ target_link_libraries(${FILTER_NAME}
         CycToolkit
         lslidar
         Robot_Livox
-        fmt
         ${CyC_OPENCV_WORLD})
 
 if (WIN32)
     target_link_libraries(${FILTER_NAME} PUBLIC libconfig++)
 else ()
-    target_link_libraries(${FILTER_NAME} PUBLIC config++)
+    target_link_libraries(${FILTER_NAME} PUBLIC config++ fmt)
 endif (WIN32)
 
 if (NOT WIN32)
@@ -95,4 +94,8 @@ add_executable(tu_Lidar src/tu_Lidar.cpp)
 target_include_directories(tu_Lidar PUBLIC ${CMAKE_SOURCE_DIR}/src/cyc_robots/Livox/src)
 target_link_directories(tu_Lidar PUBLIC ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
 target_link_libraries(tu_Lidar PUBLIC CycToolkit Robot_Livox ${CyC_OPENCV_WORLD})
-
+if (WIN32)
+    target_link_libraries(tu_Lidar PUBLIC libconfig++)
+else ()
+    target_link_libraries(tu_Lidar PUBLIC config++ fmt)
+endif()

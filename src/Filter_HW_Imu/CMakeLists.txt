@@ -4,8 +4,6 @@
 set(FILTER_NAME Filter_HW_Imu)
 
 add_library(${FILTER_NAME} SHARED
-    ${CyC_THIRD_PARTY}/rs232/rs232.h 
-    ${CyC_THIRD_PARTY}/rs232/rs232.c
     src/CImuUtils.h
     src/CImuUtils.cpp
     src/CImuFilter.h
@@ -14,6 +12,8 @@ add_library(${FILTER_NAME} SHARED
     src/CImuSim.cpp
     src/api/MPU9250/CImuMPU9250_API.h
     src/api/MPU9250/CImuMPU9250_API.cpp
+    src/api/MPU9250/rs232.h 
+    src/api/MPU9250/rs232.c
     src/api/brick/CImuBrick_API.h
     src/api/brick/CImuBrick_API.cpp
     src/api/brick/brick_imu_v2.h
@@ -24,10 +24,6 @@ add_library(${FILTER_NAME} SHARED
     src/api/android/CNativeSensor_API.h
     src/api/unity/CImuUnity_API.cpp
     src/api/unity/CImuUnity_API.h)
-    
-target_include_directories(${FILTER_NAME}
-    PUBLIC
-        ${CyC_THIRD_PARTY}/rs232)
         
 target_link_directories(${FILTER_NAME}
     PUBLIC 
@@ -77,8 +73,8 @@ add_executable(tu_Imu
     src/tu_Imu.cpp
     src/api/MPU9250/CImuMPU9250_API.h
     src/api/MPU9250/CImuMPU9250_API.cpp
-    ${CyC_THIRD_PARTY}/rs232/rs232.h 
-    ${CyC_THIRD_PARTY}/rs232/rs232.c)
+    src/api/MPU9250/rs232.h 
+    src/api/MPU9250/rs232.c)
 
 target_link_directories(tu_Imu
     PUBLIC 
