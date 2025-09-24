@@ -89,13 +89,12 @@ target_link_libraries(tu_Imu
         ${FILTER_NAME}
         CycToolkit
         ${CyC_OPENCV_WORLD}
-        Robot_RealSense
-        fmt)
+        Robot_RealSense)
 
 if (WIN32)
     target_link_libraries(tu_Imu PUBLIC libconfig++)
 else ()
-    target_link_libraries(tu_Imu PUBLIC config++)
+    target_link_libraries(tu_Imu PUBLIC config++ fmt)
 endif()
 
 if (Build_Robot_UnitreeA1)
