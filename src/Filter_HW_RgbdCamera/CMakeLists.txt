@@ -127,19 +127,9 @@ else ()
     target_link_libraries(tu_RgbdCamera PUBLIC config++ pthread fmt)
 endif()
 
-add_executable(tu_RgbdCamera_DepthEncoding
-    src/tu_RgbdCamera_DepthEncoding.cpp)
-
-target_link_directories(tu_RgbdCamera_DepthEncoding
-    PUBLIC 
-        ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
-
-target_link_libraries(tu_RgbdCamera_DepthEncoding
-    PUBLIC
-        CycToolkit
-        config++
-        ${CyC_OPENCV_WORLD})
-
+add_executable(tu_RgbdCamera_DepthEncoding src/tu_RgbdCamera_DepthEncoding.cpp)
+target_link_directories(tu_RgbdCamera_DepthEncoding PUBLIC ${CyC_THIRD_PARTY_LIBRARY_DIRECTORIES})
+target_link_libraries(tu_RgbdCamera_DepthEncoding PUBLIC CycToolkit ${CyC_OPENCV_WORLD})
 if (WIN32)
     target_link_libraries(tu_RgbdCamera_DepthEncoding PUBLIC libconfig++)
 else ()
